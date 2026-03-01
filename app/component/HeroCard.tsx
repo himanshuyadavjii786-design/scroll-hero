@@ -8,10 +8,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const heroRef = useRef(null);
-  const card2 = useRef(null);
-  const card3 = useRef(null);
-  const titleRef = useRef(null);
-  const metricsRef = useRef(null);
+  const layer1 = useRef(null);
+  const layer2 = useRef(null);
+  const layer3 = useRef(null);
+  const textRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -19,34 +19,66 @@ export default function Hero() {
         scrollTrigger: {
           trigger: heroRef.current,
           start: "top top",
-          end: "+=1600",
-          scrub: 1.2,
+          end: "+=1500",
+          scrub: 1,
           pin: true,
         },
       });
 
-      // Unfold animation
-      tl.to(card3.current, { y: 250, rotationX: -10 }, 0);
+      // Scale whole group
+      tl.to([layer1.current, layer2.current, layer3.current], {
+        scale: 1.3,
+        duration: 1,
+        ease: "none",
+      });
 
-      // Shrink title
+      // Split layers apart
       tl.to(
-        titleRef.current,
+        layer1.current,
         {
-          scale: 0.6,
-          opacity: 0,
+          x: -300,
+          rotation: -20,
+          duration: 1,
+          opacity: 1,
+          ease: "none",
         },
-        0.2,
+        0.5,
       );
 
-      // Reveal metrics
       tl.to(
-        metricsRef.current.children,
+        layer2.current,
         {
+          y: -250,
+          rotation: 15,
+          duration: 1,
           opacity: 1,
-          y: 0,
-          stagger: 0.2,
+          ease: "none",
         },
-        0.6,
+        0.5,
+      );
+
+      tl.to(
+        layer3.current,
+        {
+          x: 300,
+          rotation: 25,
+          duration: 1,
+          opacity: 1,
+          ease: "none",
+        },
+        0.5,
+      );
+
+      // Fade out headline
+      tl.to(
+        textRef.current,
+        {
+          y: 250,
+          scale: 0.5,
+          duration: 1,
+          ease: "none",
+        },
+        0.5,
       );
     }, heroRef);
 
@@ -56,50 +88,49 @@ export default function Hero() {
   return (
     <section
       ref={heroRef}
-      className="h-screen flex items-center justify-center bg-gradient-to-b from-black to-gray-900 text-white relative overflow-hidden"
+      className="h-screen relative flex items-center justify-center overflow-hidden bg-black text-white"
     >
-      {/* Cards */}
-      <div className="relative w-100 h-96 perspective-[1200px]">
-        {/* Card 1 */}
+      {/* Background Glow */}
+      <div className="absolute w-[800px] h-[800px] bg-purple-600 opacity-20 blur-3xl rounded-full" />
 
-        {/* Card 2 (Center Card with Title) */}
-        <div
-          ref={card2}
-          className="absolute w-full h-full bg-white text-black rounded-2xl shadow-2xl flex items-center justify-center"
-        >
-          <div
-            ref={metricsRef}
-            className="absolute flex gap-16 opacity-100 text-black"
-          >
-            <div className="opacity-0 translate-y-10 text-center">
-              <h2 className="text-4xl font-bold">120+</h2>
-              <p>Projects</p>
-            </div>
-
-            <div className="opacity-0 translate-y-10 text-center">
-              <h2 className="text-4xl font-bold">98%</h2>
-              <p>Satisfaction</p>
-            </div>
-
-            <div className="opacity-0 translate-y-10 text-center">
-              <h2 className="text-4xl font-bold">5★</h2>
-              <p>Rating</p>
-            </div>
-          </div>
+      {/* Split Layers */}
+      <div
+        ref={layer1}
+        className="absolute w-64 h-64 bg-blue-500 rounded-2xl mix-blend-screen opacity-0"
+      >
+        <div className="flex justify-center items-center h-full flex-col">
+          <h2 className="text-3xl font-bold">120+</h2>
+          <p>Projects</p>
         </div>
-
-        {/* Card 3 */}
-        <div
-          ref={card3}
-          className="absolute w-full h-full bg-white text-black rounded-2xl shadow-2xl flex items-center justify-center"
-        >
-          <h1 className="text-4xl font-bold tracking-widest text-center">
-            WELCOME <br /> ITZFIZZ
-          </h1>
+      </div>
+      <div
+        ref={layer2}
+        className="absolute w-64 h-64 bg-pink-500 rounded-2xl mix-blend-screen opacity-0"
+      >
+        <div className="flex justify-center items-center h-full flex-col">
+          <h2 className="text-3xl font-bold">98%</h2>
+          <p>Satisfaction</p>
+        </div>
+      </div>
+      <div
+        ref={layer3}
+        className="absolute w-64 h-64 bg-green-400 rounded-2xl mix-blend-screen opacity-0"
+      >
+        <div className="flex justify-center items-center h-full flex-col">
+          <h2 className="text-3xl font-bold">5★</h2>
+          <p>Rating</p>
         </div>
       </div>
 
-      {/* Metrics (appear later) */}
+      {/* Headline */}
+      <div ref={textRef} className="z-10 text-center">
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white text-center leading-tight">
+          <span className="block">W E L C O M E</span>
+          <span className="block bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+            I T Z F I Z Z
+          </span>
+        </h1>
+      </div>
     </section>
   );
 }
